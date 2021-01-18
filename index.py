@@ -34,19 +34,32 @@ class MainApp(QMainWindow, ui):
         if total_size > 0:
             download_percentage = read_data * 100 / total_size
             self.progressBar.setValue(download_percentage)
+            QApplication.processEvents()
 
     def handle_browse(self):
         # enable browsing to our os, pick save location
         save_location = QFileDialog.getSaveFileName(self, caption="Save As", directory=".", filter="All Files(*.*)")
-        self.lineEdit_2.setText(save_location)
+        self.lineEdit_2.setText(save_location[0])
 
     def download(self):
         # download any file
         download_url = self.lineEdit.text()
         save_location = self.lineEdit_2.text()
 
-        urllib.request.urlretrieve(download_url, save_location, self.handle_progress)
+        if download_url == '' or save_location == '':
+            QMessageBox.warning(self, "Data Error", "Provide a valid URL or save location")
+        else:
+            try:
+                urllib.request.urlretrieve(download_url, save_location, self.handle_progress)
+            except Exception:
+                QMessageBox.warning(self, "Download Error", "Provide a valid URL or save location")
+                return
 
+        QMessageBox.information(self, "Download Completed", "The Download Completed Successfully")
+        self.lineEdit.setText('')
+        self.lineEdit_2.setText('')
+        self.progressBar.setValue(0)
+        
     def save_browse(self):
         # save location in the line edit
         pass
