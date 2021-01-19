@@ -23,7 +23,12 @@ class MainApp(QMainWindow, ui):
 
     def init_ui(self):
         # Contain all ui changes in loading
-        pass
+        self.tabWidget.tabBar().setVisible(False)
+        self.apply_qdark_style()
+        self.move_box_1()
+        self.move_box_2()
+        self.move_box_3()
+        self.move_box_4()
 
     def handle_buttons(self):
         # handle all buttons in the app
@@ -34,6 +39,17 @@ class MainApp(QMainWindow, ui):
         self.pushButton_5.clicked.connect(self.download_video)
         self.pushButton_7.clicked.connect(self.playlist_download)
         self.pushButton_6.clicked.connect(self.playlist_save_browse)
+
+        self.pushButton_8.clicked.connect(self.open_home)
+        self.pushButton_9.clicked.connect(self.open_download)
+        self.pushButton_10.clicked.connect(self.open_youtube)
+        self.pushButton_11.clicked.connect(self.open_settings)
+        self.pushButton_11.clicked.connect(self.open_settings)
+
+        self.pushButton_12.clicked.connect(self.apply_darkgray_style)
+        self.pushButton_13.clicked.connect(self.apply_qdark_style)
+        self.pushButton_14.clicked.connect(self.apply_darkorange_style)
+        self.pushButton_15.clicked.connect(self.apply_classic)
 
     def handle_progress(self, block_num, block_size, total_size):
         # calculate the progress
@@ -159,7 +175,7 @@ class MainApp(QMainWindow, ui):
         if total > 0:
             download_percentage = read_data * 100 / total
             self.progressBar_3.setValue(download_percentage)
-            remaining_time = round(time/60, 2)
+            remaining_time = round(time / 60, 2)
 
             self.label_6.setText(str('{} minutes remaining'.format(remaining_time)))
             QApplication.processEvents()
@@ -167,6 +183,78 @@ class MainApp(QMainWindow, ui):
     def playlist_save_browse(self):
         playlist_save_location = QFileDialog.getExistingDirectory(self, "Select Download Directory")
         self.lineEdit_6.setText(playlist_save_location)
+
+    #######################################################
+    ############ UI Changes Methods #############
+
+    def open_home(self):
+        self.tabWidget.setCurrentIndex(0)
+
+    def open_download(self):
+        self.tabWidget.setCurrentIndex(1)
+
+    def open_youtube(self):
+        self.tabWidget.setCurrentIndex(2)
+
+    def open_settings(self):
+        self.tabWidget.setCurrentIndex(3)
+
+    ########################################################
+    ################## App Themes #########################
+    def apply_darkorange_style(self):
+        style = open('styles/darkorange.css')
+        style = style.read()
+        self.setStyleSheet(style)
+
+    def apply_qdark_style(self):
+        style = open('styles/qdark.css')
+        style = style.read()
+        self.setStyleSheet(style)
+
+    def apply_darkgray_style(self):
+        style = open('styles/qdarkgrey.css')
+        style = style.read()
+        self.setStyleSheet(style)
+
+    def apply_classic(self):
+        style = open('styles/classic.css')
+        style = style.read()
+        self.setStyleSheet(style)
+
+    ####################################################
+    ################### App Animation ##################
+
+    def move_box_1(self):
+        box_animation = QPropertyAnimation(self.groupBox_12, b"geometry")
+        box_animation.setDuration(2000)
+        box_animation.setStartValue(QRect(0, 0, 0, 0))
+        box_animation.setEndValue(QRect(100, 80, 301, 161))
+        box_animation.start()
+        self.box_animation = box_animation
+
+    def move_box_2(self):
+        box_animation2 = QPropertyAnimation(self.groupBox_7, b"geometry")
+        box_animation2.setDuration(2000)
+        box_animation2.setStartValue(QRect(0, 0, 0, 0))
+        box_animation2.setEndValue(QRect(500, 80, 301, 161))
+        box_animation2.start()
+        self.box_animation2 = box_animation2
+
+    def move_box_3(self):
+        box_animation3 = QPropertyAnimation(self.groupBox_3, b"geometry")
+        box_animation3.setDuration(2000)
+        box_animation3.setStartValue(QRect(0, 0, 0, 0))
+        box_animation3.setEndValue(QRect(100, 310, 301, 161))
+        box_animation3.start()
+        self.box_animation3 = box_animation3
+
+    def move_box_4(self):
+        box_animation4 = QPropertyAnimation(self.groupBox_11, b"geometry")
+        box_animation4.setDuration(2000)
+        box_animation4.setStartValue(QRect(0, 0, 0, 0))
+        box_animation4.setEndValue(QRect(500, 310, 301, 161))
+        box_animation4.start()
+        self.box_animation4 = box_animation4
 
 
 def main():

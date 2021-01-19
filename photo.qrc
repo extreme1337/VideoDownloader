@@ -4,5 +4,12 @@
         <file>icons/browse.png</file>
         <file>icons/save.png</file>
         <file>icons/check.png</file>
+        <file>icons/home.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/yt.png</file>
+        <file>icons/home.png</file>
+        <file>icons/ytplaylist.png</file>
+        <file>icons/download.png</file>
+        <file>icons/wrench.png</file>
     </qresource>
 </RCC>
