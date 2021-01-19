@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 import sys
 
 import os
-import os.path
+from os import path
 from PyQt5.uic import loadUiType
 import urllib.request
 import pafy
@@ -32,6 +32,8 @@ class MainApp(QMainWindow, ui):
         self.pushButton_3.clicked.connect(self.get_video_data)
         self.pushButton_4.clicked.connect(self.save_browse)
         self.pushButton_5.clicked.connect(self.download_video)
+        self.pushButton_7.clicked.connect(self.playlist_download)
+        self.pushButton_6.clicked.connect(self.playlist_save_browse)
 
     def handle_progress(self, block_num, block_size, total_size):
         # calculate the progress
@@ -116,6 +118,55 @@ class MainApp(QMainWindow, ui):
         # save location in the line edit
         save_location = QFileDialog.getSaveFileName(self, caption="Save as", directory=".", filter="All Files(*.*)")
         self.lineEdit_4.setText(str(save_location[0]))
+
+    #######################################################
+    ############ Download Youtube playlist #############
+
+    def playlist_download(self):
+        playlist_url = self.lineEdit_5.text()
+        save_location = self.lineEdit_6.text()
+
+        if playlist_url == '' or save_location == '':
+            QMessageBox.warning(self, "Data Error", "Provide a valid Playlist URL or save location")
+        else:
+            playlist = pafy.get_playlist(playlist_url)
+            playlist_videos = playlist['items']
+
+            self.lcdNumber_2.display(len(playlist_videos))
+
+        os.chdir(save_location)
+        if os.path.exists(str(playlist['title'])):
+            os.chdir(str(playlist['title']))
+        else:
+            os.mkdir(str(playlist['title']))
+            os.chdir(str(playlist['title']))
+
+        current_video_in_download = 1
+        quality = self.comboBox_2.currentIndex()
+        QApplication.processEvents()
+
+        for video in playlist_videos:
+            current_video = video['pafy']
+            current_video_stream = current_video.videostreams
+            self.lcdNumber.display(current_video_in_download)
+            download = current_video_stream[quality].download(callback=self.playlist_progress)
+            QApplication.processEvents()
+
+            current_video_in_download += 1
+
+    def playlist_progress(self, total, received, ratio, rate, time):
+        read_data = received
+        if total > 0:
+            download_percentage = read_data * 100 / total
+            self.progressBar_3.setValue(download_percentage)
+            remaining_time = round(time/60, 2)
+
+            self.label_6.setText(str('{} minutes remaining'.format(remaining_time)))
+            QApplication.processEvents()
+
+    def playlist_save_browse(self):
+        playlist_save_location = QFileDialog.getExistingDirectory(self, "Select Download Directory")
+        self.lineEdit_6.setText(playlist_save_location)
 
 
 def main():
